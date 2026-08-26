@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Expense Tracker</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(-45deg,#a5acce,#82cb1c,#34ddda,#b01396);
+    background-size:400% 400%;
+    animation:bg 12s ease infinite;
+}
+
+@keyframes bg{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+.container{
+    width:90%;
+    max-width:700px;
+    padding:30px;
+    border-radius:20px;
+    background:rgba(41, 3, 3, 0.15);
+    backdrop-filter:blur(12px);
+    box-shadow:0 8px 32px rgba(0,0,0,.2);
+    color:white;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.form{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr auto;
+    gap:10px;
+}
+
+input{
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    outline:none;
+}
+
+button{
+    padding:12px 18px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+    background:#091316;
+    color:white;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+.summary{
+    margin:20px 0;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    overflow:hidden;
+    border-radius:12px;
+}
+
+th,td{
+    padding:12px;
+    text-align:center;
+    background:rgba(255,255,255,0.12);
+}
+
+th{
+    background:rgba(255,255,255,0.22);
+}
+
+.delete{
+    background:#ff4d4d;
+}
+
+.delete:hover{
+    background:#d62828;
+}
+
+@media(max-width:600px){
+    .form{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>💰 Personal Expense Tracker</h1>
+
+    <div class="form">
+        <input type="text" id="expenseName" placeholder="Expense Name">
+        <input type="number" id="expenseAmount" placeholder="Amount">
+        <input type="date" id="expenseDate">
+        <button onclick="addExpense()">Add</button>
+    </div>
+
+    <div class="summary">
+        Total Expenses: ₹<span id="total">0</span>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Expense</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="expenseList"></tbody>
+    </table>
+</div>
+
+<script>
+let totalExpense = 0;
+
+function addExpense() {
+    const name = document.getElementById("expenseName").value;
+    const amount = document.getElementById("expenseAmount").value;
+    const date = document.getElementById("expenseDate").value;
+
+    if(name === "" || amount === "" || date === "") {
+        alert("Please fill all fields");
+        return;
+    }
+
+    const tbody = document.getElementById("expenseList");
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td>${name}</td>
+        <td>₹${amount}</td>
+        <td>${date}</td>
+        <td>
+            <button class="delete" onclick="deleteExpense(this, ${amount})">
+                Delete
+            </button>
+        </td>
+    `;
+
+    tbody.appendChild(row);
+
+    totalExpense += Number(amount);
+    document.getElementById("total").textContent = totalExpense.toFixed(2);
+
+    document.getElementById("expenseName").value = "";
+    document.getElementById("expenseAmount").value = "";
+    document.getElementById("expenseDate").value = "";
+}
+
+function deleteExpense(btn, amount) {
+    btn.parentElement.parentElement.remove();
+
+    totalExpense -= Number(amount);
+    document.getElementById("total").textContent = totalExpense.toFixed(2);
+}
+</script>
+
+</body>
+</html>
